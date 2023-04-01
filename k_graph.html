@@ -23,7 +23,24 @@
 						</article>
 						<article>
 							<center>Please find the complete project report at the Link: <a href="https://www.mdsi.tum.de/fileadmin/w00cet/di-lab/pdf/Horvath_SS2022_Final_Report.pdf" target="_blank">Project Report</a></center>
-							
+							<p>This project was done in collaboration with <a href="https://www.horvath-partners.com/en/expertise/it-digital-data-analytics/data-science-steering-lab" target="_blank">Steering Lab-Horv´ath</a>. The main goal is to build an end to end pipeline that takes PDF's as input and generate a knowledge graph for the text in the PDF. Due to the nature of the problem it was possible to structure the project as a pipeline. An overview of the pipeline can be seen below.
+							<center><img src="images/KG_pipeline.png" alt=""  /></center>
+							Each part was first developed independently and then everything was merged in one code base to finally generate the knowledge graph.</p>
+							<center><h3>Data</h3></center>
+							<p>The text documents used as input are scientific papers in PDF format from the German Environment Agency (Umweltbundesamt), which are written in English as well as in German language. Their lengths vary from three to 40 pages. The results shown here are for the the paper called <a href="https://www.umweltbundesamt.de/sites/default/files/medien/479/publikationen/scopp_the_revision_of_the_reach_authorisation_and_restriction_system.pdf" target="_blank">"The Revision of the REACH Authorisation and Restriction System"</a></p>
+							<center><h3>Abstract Extraction</h3></center>
+							<p>Since the summary or abstract of a paper contains its most important information, a knowledge graph of only these paragraphs will suffice to get a good overview of the paper, while keeping the graph clear. One way is to use abstractive summarization on the text of the paper but as we are working with scientific papers, most of the papers already had a pre-defined summary or abstract section. These sections are already very well written and can be used directly. For the papers who dont have such section we use abstractive summarization to build a summary. The difficulty of extracting these sections lies in the fact that these are in PDF format. We used "fitz" library from PyMuPDF to extract text from PDF's which returns text as a block in which data is seperated based on fonts, colo and font sizes. This creates a problem as we cannot simply parse line by line and look for abstract. To tackle this problem, we use several steps of heuristics that we defined based on sample data.</p>
+							<ul>
+								<li>Count the number of words for each font size in the document. The font size with most words is the font size of paragraphs in the PDF.</li>
+								<li>Larger font sizes than this are defined as headings and smaller sizes as sub-paragraphs.</li>
+								<li> Search for key words, like ”Abstract” or ”Summary” for the English papers and ”Abstrakt” or ”Einleitung” for the ones in German language, in the headings that were extracted.</li>
+								<li>The paragraphs following the header with a key word until the next heading is then taken as the summary.</li>
+							</ul>
+							<center><h3>Coreference Resolution</h3></center>
+							<p>The first step of entity extraction is coreference resolution, an NLP technique needed when two or more expressions refer to the same entity. </p>
+							<center><h3>Entity Extraction</h3></center>
+							<center><h3> Relationship Extraction</h3></center>
+							<center><h3>Knowledge Graph generation</h3></center>
 						</article> 
 					</div>
 
