@@ -37,10 +37,34 @@
 								<li>The paragraphs following the header with a key word until the next heading is then taken as the summary.</li>
 							</ul>
 							<center><h3>Coreference Resolution</h3></center>
-							<p>The first step of entity extraction is coreference resolution, an NLP technique needed when two or more expressions refer to the same entity. </p>
+							<p>The next step in the pipeline is coreference resolution, an NLP technique needed when two or more expressions refer to the same entity. Coreference resolution finds all the entities with the same meaning, clusters them together and replaces each with their reference entities. By performing coreference resolution long-range dependencies in the text can be handled and any duplicate edges in the knowledge graph are avoided.</p>
+							<center><img src="images/cor_res.png"></center>
 							<center><h3>Entity Extraction</h3></center>
+							Next step is to extract entities from the text. These entities will act as the nodes for the knowledge graph. To extract all possible entities we combine Deep learning based NER with a rule based approach. The steps involved in the part of the pipeline is shown below.
+							<ol>
+								<li>We used BERT based NER approach to extract all possible named entities</li>
+								<li>As NER only extraxct named entity, a rule based approach is used to extract all other entities
+									<ul>
+										<li>Produce a dependency trees using the dependency parser from the spaCy library.</li>
+										<li>Entity extraction rule: <b>"Extract the subject and all objects along with their modifiers, compound words and punctuation marks between them."</b></li>
+										<li>Parse the dependency tree and extract words based on above rule.</li>
+									</ul>
+								</li>
+								<li>Merge the entities extracted from both approach and remove any duplicate entities.</li>
+							</ol>
 							<center><h3> Relationship Extraction</h3></center>
+							To extract relatioships we used a self supervised approach named <b>"SelfORE"</b>. The main steps involved in this approach is shown below.
+							<ol>
+								<li>Decide on the number of clusters for the number of relationships to be extracted.</li>
+								<li>Use Adaptive clustering(Please read the report to see how it works) to assign each entity pair to a perticular cluster.</li>
+								<li>Using Entity pair as input and assigned cluster as output, train a transformer model to predict the cluster assignment.</li>
+								<li>The trained transformer model can than be used to assign cluster numbers to new entity pairs.</li>
+								<li>As the model returns the cluster asignment and not the actual text for the relationship, we used N-gram approach between the two entiites to assign text to each cluster.</li>
+							</ol>
+							<p>We combine the self supervised approach with a rule based approach that marks the root word of the sentence as the relationship between the entities in the sentence to generate a better KG.</p>
 							<center><h3>Knowledge Graph generation</h3></center>
+							Once we have both entities and relationships we generate the KG by keeping entities as nodes and relationships as edges.
+							<center><img src="images/final_KG.png"></center>
 						</article> 
 					</div>
 
